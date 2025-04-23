@@ -1,0 +1,25 @@
+{
+  "name": "codechronicle",
+  "version": "1.0.0",
+  "description": "DevOps ECV",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hugo-potpot/codechronicle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hugo-potpot/codechronicle/issues"
+  },
+  "homepage": "https://github.com/hugo-potpot/codechronicle#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "fs": "^0.0.1-security",
+    "openai": "^4.95.1",
+    "path": "^0.12.7"
+  }
+}

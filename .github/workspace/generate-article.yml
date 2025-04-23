@@ -1,0 +1,45 @@
+name: Generate Article on PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  generate-article:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate article
+        run: node scripts/generate-article.js
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Commit generated article
+        run: git commit -m "Generated article" blog/*.md || echo "No changes to commit"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: 'GitHub Actions'
+
+      - name: Push changes
+        run: git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: 'GitHub Actions'
+
+      - name: Upload generated article
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-article
+          path: blog/*.md
