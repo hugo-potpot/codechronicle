@@ -23,8 +23,9 @@ jobs:
       - name: Extract frontmatter
         id: frontmatter
         run: |
-          TITLE=$(grep -m 1 "title:" blog/*.md | cut -d '"' -f 2)
-          SUMMARY=$(grep -m 1 "summary:" blog/*.md | cut -d ':' -f 2- | xargs)
+          LATEST_FILE=$(ls -t blog/*.md | head -n1)
+          TITLE=$(grep "title:" "$LATEST_FILE" | cut -d '"' -f 2)
+          SUMMARY=$(grep "summary:" "$LATEST_FILE" | cut -d ':' -f 2- | xargs)
           echo "title=$TITLE" >> $GITHUB_ENV
           echo "summary=$SUMMARY" >> $GITHUB_ENV
 
