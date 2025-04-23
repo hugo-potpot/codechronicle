@@ -2,7 +2,7 @@ name: Discord Notification
 
 on:
   pull_request:
-    types: [closed]
+    types: [ closed ]
 
 jobs:
   notify:
@@ -23,18 +23,18 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" -X POST ${{ secrets.DISCORD_WEBHOOK }} \
           -d '{
-            "embeds": [{
-              "title": "Nouvel article publié",
+           "embeds": [{
+              "title": "✨ Nouvel article publié",
               "description": "${{ env.title }}",
               "color": 5814783,
               "fields": [
                 {
-                  "name": "Résumé",
+                  "name": "📝 Résumé",
                   "value": "${{ env.summary }}"
                 },
                 {
-                  "name": "Website",
-                  "value": "[Lire l'article](https://codechronicle-hugo-potier.fwh.is/)"
+                  "name": "🌐 Site web",
+                  "value": "https://codechronicle-hugo-potier.fwh.is/"
                 }
               ],
               "footer": {
