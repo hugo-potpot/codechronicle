@@ -5,8 +5,10 @@ permissions:
   issues: write
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  workflow_run:
+    workflows: ["Generate Article on PR"]
+    types:
+      - completed
 
 jobs:
   add-comment:
