@@ -74,19 +74,23 @@ async function generateWebsite() {
       const htmlContent = marked(markdown);
       const slug = path.basename(file, '.md');
 
+      // Nettoyage du titre et du résumé des guillemets potentiels
+      const title = data.title.replace(/^["'](.*)["']$/, '$1');
+      const summary = data.summary.trim();
+
       articles.push({
-        title: data.title,
-        summary: data.summary,
+        title: title,
+        summary: summary,
         slug: slug
       });
 
       // Save article HTML
-      const articleHtml = createTemplate(data.title, htmlContent);
+      const articleHtml = createTemplate(title, htmlContent);
       fs.writeFileSync(
         path.join(publicDir, `${slug}.html`),
         articleHtml
       );
-    }
+    }s
 
     // Create index page
     const indexHtml = createIndexPage(articles);
