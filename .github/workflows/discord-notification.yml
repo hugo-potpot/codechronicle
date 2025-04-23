@@ -31,6 +31,10 @@ jobs:
                 {
                   "name": "Résumé",
                   "value": "${{ env.summary }}"
+                },
+                {
+                  "name": "Website",
+                  "value": "[Lire l'article](https://codechronicle-hugo-potier.fwh.is/)"
                 }
               ],
               "footer": {
