@@ -3,7 +3,7 @@ name: Generate Article on PR
 permissions:
   pull-requests: write
   issues: write
-
+  contents: write
 
 on:
   pull_request:
