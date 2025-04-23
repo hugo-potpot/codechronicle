@@ -104,7 +104,6 @@ async function main() {
     }
 
     console.log('Processing complete');
-    process.exit(success ? 0 : 1);
   } catch (error) {
     console.error('Unexpected error:', error);
     process.exit(1);
