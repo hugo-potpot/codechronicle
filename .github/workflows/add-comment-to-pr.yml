@@ -1,0 +1,31 @@
+name: Add Comment to PR
+
+permissions:
+  pull-requests: write
+  issues: write
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  add-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get last commit
+        run: echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+
+      - name: Add comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Just le goat"
+            })
