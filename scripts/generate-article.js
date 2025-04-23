@@ -1,3 +1,4 @@
+require('dotenv').config({path: '../.env'});
 const fs = require('fs');
 const path = require('path');
 const { OpenAI } = require('openai');
@@ -6,7 +7,6 @@ const { OpenAI } = require('openai');
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
 
 /**
  * Generate article content using OpenAI
@@ -104,7 +104,6 @@ async function main() {
     }
 
     console.log('Processing complete');
-    process.exit(success ? 0 : 1);
   } catch (error) {
     console.error('Unexpected error:', error);
     process.exit(1);

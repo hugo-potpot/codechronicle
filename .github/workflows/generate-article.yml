@@ -26,17 +26,28 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Add changes
+        run: git add blog/*.md
+
       - name: Commit generated article
-        run: git commit -m "Generated article" blog/*.md || echo "No changes to commit"
+        run: git commit -m "Generated article" || echo "No changes to commit"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_AUTHOR_NAME: 'GitHub Actions'
+
+      - name: Pull and rebase
+        run: git pull --rebase origin ${{ github.head_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push changes
-        run: git push origin HEAD:main
+        run: git push origin HEAD:${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_AUTHOR_NAME: 'GitHub Actions'
 
       - name: Upload generated article
         uses: actions/upload-artifact@v4
