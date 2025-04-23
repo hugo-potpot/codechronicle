@@ -1,0 +1,41 @@
+name: Discord Notification
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract frontmatter
+        id: frontmatter
+        run: |
+          TITLE=$(grep -m 1 "title:" blog/*.md | cut -d '"' -f 2)
+          SUMMARY=$(grep -m 1 "summary:" blog/*.md | cut -d ':' -f 2- | xargs)
+          echo "title=$TITLE" >> $GITHUB_ENV
+          echo "summary=$SUMMARY" >> $GITHUB_ENV
+
+      - name: Send Discord notification
+        run: |
+          curl -H "Content-Type: application/json" -X POST ${{ secrets.DISCORD_WEBHOOK }} \
+          -d '{
+            "embeds": [{
+              "title": "Nouvel article publié",
+              "description": "${{ env.title }}",
+              "color": 5814783,
+              "fields": [
+                {
+                  "name": "Résumé",
+                  "value": "${{ env.summary }}"
+                }
+              ],
+              "footer": {
+                "text": "CodeChronicle"
+              }
+            }]
+          }'
