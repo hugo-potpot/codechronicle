@@ -15,10 +15,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get last commit
-        run: echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
-      - name: Add comment
+      - name: Extract frontmatter
+        id: frontmatter
+        run: |
+          TITLE=$(grep -m 1 "title:" blog/*.md | cut -d '"' -f 2)
+          SUMMARY=$(grep -m 1 "summary:" blog/*.md | cut -d ':' -f 2- | xargs)
+          echo "title=$TITLE" >> $GITHUB_ENV
+          echo "summary=$SUMMARY" >> $GITHUB_ENV
+
+      - name: Add comment to PR
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -27,5 +37,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "Just le goat"
+              body: `Title: ${process.env.title}\nSummary: ${process.env.summary}`
             })
