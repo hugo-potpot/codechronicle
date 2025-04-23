@@ -84,22 +84,31 @@ async function main() {
     // Define the blog directory
     const blogDir = path.join(__dirname, '../blog');
 
-    // Read all files in the blog directory
+    // Read all files in the blog directory, sorted by modification date (newest first)
     const files = fs.readdirSync(blogDir)
       .filter(file => file.endsWith('.md'))
-      .map(file => path.join(blogDir, file));
+      .sort((a, b) => {
+        const pathA = path.join(blogDir, a);
+        const pathB = path.join(blogDir, b);
+        return fs.statSync(pathB).mtime.getTime() - fs.statSync(pathA).mtime.getTime();
+      })
+      .map(file => ({
+        path: path.join(blogDir, file),
+        content: fs.readFileSync(path.join(blogDir, file), 'utf8')
+      }))
+      .filter(file => file.content.trim() === ''); // Only process empty files
 
     if (files.length === 0) {
-      console.error('No markdown files found in the blog directory.');
+      console.error('No empty markdown files found in the blog directory.');
       process.exit(1);
     }
 
-    console.log(`Starting to process ${files.length} file(s)`);
+    console.log(`Found ${files.length} empty file(s) to process`);
 
-    // Process each file
+    // Process each empty file
     let success = true;
     for (const file of files) {
-      const result = await processFile(file);
+      const result = await processFile(file.path);
       if (!result) success = false;
     }
 
@@ -109,6 +118,5 @@ async function main() {
     process.exit(1);
   }
 }
-
 // Run the main function
 main().then(r => console.log('Done')).catch(e => console.error(e));
