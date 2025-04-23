@@ -1,0 +1,44 @@
+name: Generate Static Website
+
+on:
+  workflow_run:
+    workflows: ["Discord Notification"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install marked gray-matter
+
+      - name: Generate static site
+        run: node scripts/generate-static-website.js
+
+      - name: Install lftp
+        run: sudo apt-get install -y lftp
+
+      - name: Deploy to FTP
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_PORT: ${{ secrets.FTP_PORT }}
+        run: |
+          lftp -e "
+          set ssl:verify-certificate no;
+          open -u $FTP_USER,$FTP_PASSWORD ftp://$FTP_HOST:$FTP_PORT;
+          mirror -R public/ htdocs/;
+          quit"
