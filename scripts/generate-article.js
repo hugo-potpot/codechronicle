@@ -8,7 +8,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-
 /**
  * Generate article content using OpenAI
  * @param {string} prompt - The prompt for content generation
